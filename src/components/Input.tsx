@@ -1,10 +1,11 @@
 interface InputProps { 
     placeholder: string; 
-    reference?: any
+    reference?: any;
+    type?: string;
 }
 
-export function Input({placeholder, reference}: InputProps) {
+export function Input({placeholder, reference, type}: InputProps) {
     return <div>
-        <input ref={reference} placeholder={placeholder} type={"text"} className="px-4 py-2 border rounded m-2" ></input>
+        <input ref={reference} type = {type} placeholder={placeholder} className="px-4 py-2 border rounded m-2" ></input>
     </div>
 }
