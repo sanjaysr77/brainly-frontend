@@ -5,6 +5,7 @@ import { Card } from "./components/Card";
 import { CreateContentModal } from "./components/CreateContentModal";
 import { useState } from "react";
 import { Sidebar } from "./components/Sidebar";
+import { LogoIcon } from "./icons/LogoIcon";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
