@@ -15,7 +15,13 @@ function Dashboard() {
     refresh()
   }, [modalOpen])
 
-
+  useEffect(() => {
+  const twttr = (window as any).twttr;
+  if (twttr?.widgets?.load) {
+    twttr.widgets.load();
+  }
+}, [contents]);
+ 
   return <div className="min-h-screen min-w-screen bg-gray-200">
     <Sidebar />
     <div className="ml-border-2">
