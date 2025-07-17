@@ -6,6 +6,8 @@ import { CreateContentModal } from "../components/CreateContentModal";
 import { useEffect, useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { useContent } from "../hooks/useContent";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -21,6 +23,22 @@ function Dashboard() {
     twttr.widgets.load();
   }
 }, [contents]);
+
+function handleDelete(contentId: string) {
+    axios
+      .delete(`${BACKEND_URL}/api/v1/content`, {
+        data: { contentId },
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then(() => {
+        refresh(); // Refresh the content after deletion
+      })
+      .catch((err) => {
+        console.error("Delete failed", err);
+      });
+  }
  
   return <div className="min-h-screen min-w-screen bg-gray-200">
     <Sidebar />
@@ -40,10 +58,14 @@ function Dashboard() {
           startIcon={<ShareIcon />} />
       </div>
       <div className="ml-72 flex gap-3 pl-4 flex-wrap">
-        {contents.map(({ type, link, title }) => <Card
+        {contents.map(({ _id, type, link, title }) => <Card
+          key={_id}
+          contentId={_id}
           type={type}
           link={link}
-          title={title} />
+          title={title}
+          onDelete={handleDelete}
+          />
         )}
       </div>
     </div>
