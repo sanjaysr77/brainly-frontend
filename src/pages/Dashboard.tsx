@@ -1,6 +1,5 @@
 import { Button } from "../components/Button";
 import { AddIcon } from "../icons/AddIcon";
-import { ShareIcon } from "../icons/ShareIcon";
 import { Card } from "../components/Card";
 import { CreateContentModal } from "../components/CreateContentModal";
 import { useEffect, useState } from "react";
@@ -8,6 +7,7 @@ import { Sidebar } from "../components/Sidebar";
 import { useContent } from "../hooks/useContent";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { ShareIcon } from "../icons/ShareIcon";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)

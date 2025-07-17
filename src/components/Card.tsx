@@ -1,5 +1,5 @@
 import { DeleteIcon } from "../icons/DeleteIcon";
-import { ShareIcon } from "../icons/ShareIcon";
+import { LinkIcon } from "../icons/LinkIcon";
 
 interface CardProps {
     type: "youtube" | "twitter";
@@ -13,13 +13,12 @@ export function Card({ type, link, title, contentId, onDelete }: CardProps) {
     return (
         <div>
             <div className="p-4 bg-gray-300 rounded-md border-red-700 max-w-72 border min-h-48 min-w-72">
-                {/* Top Row: ShareIcon + Title on left, DeleteIcon on right */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <a href={link} target="_blank" rel="noopener noreferrer">
-                            <ShareIcon />
+                            <LinkIcon />
                         </a>
-                        <span className="truncate max-w-[150px]">{title}</span>
+                        <div className="truncate max-w-[150px]">{title}</div>
                     </div>
                     <div
                         className="cursor-pointer"
