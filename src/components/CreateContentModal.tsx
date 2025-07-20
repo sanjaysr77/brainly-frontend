@@ -11,18 +11,25 @@ enum ContentType {
 }
 
 export function CreateContentModal({ open, onClose }) {
+
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
+    const tagRef = useRef<HTMLInputElement>(null)
+
     const [type, setType] = useState(ContentType.Youtube)
 
     async function addContent() {
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
+        const tagsRaw = tagRef.current?.value || '';
+
+        const tags = tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
 
         await axios.post(`${BACKEND_URL}/api/v1/content`, {
             link,
             title,
-            type
+            type,
+            tags,
         }, {
             headers: {
                 "Authorization": localStorage.getItem("token")
@@ -44,6 +51,7 @@ export function CreateContentModal({ open, onClose }) {
                     <div>
                         <Input reference={titleRef} placeholder={"Title"} />
                         <Input reference={linkRef} placeholder={"Link"} />
+                        <Input reference={tagRef} placeholder="Tags (Optional)" />
                     </div>
                     <div className="flex justify-center">
                         <Button
