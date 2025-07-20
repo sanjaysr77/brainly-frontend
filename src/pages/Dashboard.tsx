@@ -58,7 +58,7 @@ function handleDelete(contentId: string) {
           startIcon={<ShareIcon />} />
       </div>
       <div className="ml-72 flex gap-3 pl-4 flex-wrap">
-        {contents.map(({ _id, type, link, title }) => <Card
+        {[...contents].reverse().map(({ _id, type, link, title }) => <Card
           key={_id}
           contentId={_id}
           type={type}
