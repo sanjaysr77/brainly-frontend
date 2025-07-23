@@ -8,6 +8,8 @@ import { useContent } from "../hooks/useContent";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { ShareIcon } from "../icons/ShareIcon";
+import { SearchBar } from "../components/SearchBar";
+import { SearchIcon } from "../icons/SearchIcon";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -18,13 +20,13 @@ function Dashboard() {
   }, [modalOpen])
 
   useEffect(() => {
-  const twttr = (window as any).twttr;
-  if (twttr?.widgets?.load) {
-    twttr.widgets.load();
-  }
-}, [contents]);
+    const twttr = (window as any).twttr;
+    if (twttr?.widgets?.load) {
+      twttr.widgets.load();
+    }
+  }, [contents]);
 
-function handleDelete(contentId: string) {
+  function handleDelete(contentId: string) {
     axios
       .delete(`${BACKEND_URL}/api/v1/content`, {
         data: { contentId },
@@ -39,8 +41,11 @@ function handleDelete(contentId: string) {
         console.error("Delete failed", err);
       });
   }
- 
+
   return <div className="min-h-screen min-w-screen bg-gray-200">
+    <div className="pl-72 flex justify-center">
+      <SearchBar startIcon={<SearchIcon />} placeholder="Search" />
+    </div>
     <Sidebar />
     <div className="ml-border-2">
       <CreateContentModal open={modalOpen} onClose={() => {
@@ -65,7 +70,7 @@ function handleDelete(contentId: string) {
           link={link}
           title={title}
           onDelete={handleDelete}
-          />
+        />
         )}
       </div>
     </div>
