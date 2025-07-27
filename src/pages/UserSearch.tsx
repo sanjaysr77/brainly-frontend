@@ -11,10 +11,11 @@ import { ShareIcon } from "../icons/ShareIcon";
 import { SearchBar } from "../components/SearchBar";
 import { SearchIcon } from "../icons/SearchIcon";
 import { useNavigate } from "react-router-dom";
+import { useSearchContent } from "../hooks/useSearchContent";
 
-function Dashboard() {
+function UserSearch() {
   const [modalOpen, setModalOpen] = useState(false)
-  const { contents, refresh } = useContent();
+  const { contents, refresh } = useSearchContent();
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -47,20 +48,7 @@ function Dashboard() {
   async function handleSearch(query: string) {
     try {
       console.log("Query: ", query);
-
-      await axios.post(
-        BACKEND_URL + "/api/v1/query",
-        {
-          query
-        },
-        {
-          headers: {
-            "Authorization": localStorage.getItem("token")
-          }
-          
-        });
-
-      navigate("/usersearch");
+      refresh(query);
     } catch (error) {
       console.error("Search failed", error)
     }
@@ -87,18 +75,21 @@ function Dashboard() {
           startIcon={<ShareIcon />} />
       </div>
       <div className="ml-72 flex gap-3 pl-4 flex-wrap">
-        {[...contents].reverse().map(({ _id, type, link, title }) => <Card
-          key={_id}
-          contentId={_id}
-          type={type}
-          link={link}
-          title={title}
-          onDelete={handleDelete}
-        />
-        )}
+        {[...contents]
+          .filter(item => item)
+          .map(({ _id, type, link, title }) => (
+            <Card
+              key={_id}
+              contentId={_id}
+              type={type}
+              link={link}
+              title={title}
+              onDelete={handleDelete}
+            />
+          ))}
       </div>
     </div>
   </div>
 
 }
-export default Dashboard;
+export default UserSearch;
