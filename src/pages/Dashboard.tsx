@@ -57,6 +57,7 @@ function Dashboard() {
           headers: {
             "Authorization": localStorage.getItem("token")
           }
+          
         });
 
       navigate("/usersearch");
