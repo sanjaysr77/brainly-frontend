@@ -10,10 +10,12 @@ import { BACKEND_URL } from "../config";
 import { ShareIcon } from "../icons/ShareIcon";
 import { SearchBar } from "../components/SearchBar";
 import { SearchIcon } from "../icons/SearchIcon";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
   const { contents, refresh } = useContent();
+  const navigate = useNavigate()
 
   useEffect(() => {
     refresh()
@@ -42,9 +44,30 @@ function Dashboard() {
       });
   }
 
+  async function handleSearch(query: string) {
+    try {
+      console.log("Query: ", query);
+
+      await axios.post(
+        BACKEND_URL + "/api/v1/query",
+        {
+          query
+        },
+        {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        });
+
+      navigate("/usersearch");
+    } catch (error) {
+      console.error("Search failed", error)
+    }
+  }
+
   return <div className="min-h-screen min-w-screen bg-gray-200">
     <div className="pl-72 flex justify-center">
-      <SearchBar startIcon={<SearchIcon />} placeholder="Search" />
+      <SearchBar onSearch={handleSearch} startIcon={<SearchIcon />} placeholder="Search" />
     </div>
     <Sidebar />
     <div className="ml-border-2">
