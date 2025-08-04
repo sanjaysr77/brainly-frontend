@@ -7,10 +7,10 @@ import { Sidebar } from "../components/Sidebar";
 import { useContent } from "../hooks/useContent";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { ShareIcon } from "../icons/ShareIcon";
 import { SearchBar } from "../components/SearchBar";
 import { SearchIcon } from "../icons/SearchIcon";
 import { useNavigate } from "react-router-dom";
+import { LogoutIcon } from "../icons/LogoutIcon";
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -66,6 +66,11 @@ function Dashboard() {
     }
   }
 
+  function Logout () {
+    localStorage.removeItem("token");
+    navigate("/signin")
+  }
+
   return <div className="min-h-screen min-w-screen bg-gray-200">
     <div className="pl-72 flex justify-center">
       <SearchBar onSearch={handleSearch} startIcon={<SearchIcon />} placeholder="Search" />
@@ -82,9 +87,10 @@ function Dashboard() {
           text="Add Content"
           startIcon={<AddIcon />} />
         <Button
+          onClick={Logout}
           variant="secondary"
-          text="Share Brain"
-          startIcon={<ShareIcon />} />
+          text="Signout"
+          startIcon={<LogoutIcon />} />
       </div>
       <div className="ml-72 flex gap-3 pl-4 flex-wrap">
         {[...contents].reverse().map(({ _id, type, link, title }) => <Card
