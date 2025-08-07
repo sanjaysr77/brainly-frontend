@@ -1,14 +1,12 @@
 import { useRef, useState } from "react"
-import { CrossIcon } from "../icons/CrossIcon"
-import { Button } from "@/components/ui/button"       // ShadCN Button
-import { Input } from "@/components/ui/input"         // ShadCN Input
+import { Button } from "@/components/ui/button"       
+import { Input } from "@/components/ui/input"         
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose
 } from "@/components/ui/dialog"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
