@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
+import { getAuthHeaders } from "../utils/firebaseAuth"
 
 enum ContentType {
   Youtube = "youtube",
@@ -29,18 +30,20 @@ export function CreateContentModal({ open, onClose }: { open: boolean; onClose: 
     const tagsRaw = tagRef.current?.value || ''
     const tags = tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
 
-    await axios.post(`${BACKEND_URL}/api/v1/content`, {
-      link,
-      title,
-      type,
-      tags,
-    }, {
-      headers: {
-        "Authorization": localStorage.getItem("token")
-      }
-    })
+    try {
+      const headers = await getAuthHeaders();
+      await axios.post(`${BACKEND_URL}/api/v1/content`, {
+        link,
+        title,
+        type,
+        tags,
+      }, { headers })
 
-    onClose()
+      onClose()
+    } catch (error) {
+      console.error('Error adding content:', error);
+      alert('Failed to add content. Please try again.');
+    }
   }
 
   return (

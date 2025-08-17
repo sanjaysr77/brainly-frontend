@@ -2,6 +2,9 @@ import { useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
+import { useAuthContext } from "../components/AuthProvider"
+import { AuthButtons } from "../components/AuthButtons"
+import { getAuthHeaders } from "../utils/firebaseAuth"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -12,6 +15,13 @@ export function Signin() {
   const usernameRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+  const { user, loading } = useAuthContext()
+
+  // Redirect if user is already authenticated
+  if (user && !loading) {
+    navigate("/dashboard")
+    return null
+  }
 
   async function signin() {
     const username = usernameRef.current?.value
@@ -23,17 +33,27 @@ export function Signin() {
     }
 
     try {
+      // Get Firebase token for authentication
+      const headers = await getAuthHeaders();
+      if (!('Authorization' in headers)) {
+        alert("Please sign in with Google or GitHub first to use traditional login");
+        return;
+      }
+
       const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
         username,
         password,
-      })
+      }, { headers })
 
-      const jwt = response.data.token
-      localStorage.setItem("token", jwt)
+      // Store the backend token if needed for backward compatibility
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token)
+      }
+      
       navigate("/dashboard")
     } catch (err) {
       console.error("Signin failed", err)
-      alert("Signin failed. Please check your credentials.")
+      alert("Signin failed. Please check your credentials or sign in with Google/GitHub first.")
     }
   }
 
@@ -49,7 +69,7 @@ export function Signin() {
 
       {/* Signin Card */}
       <div className="relative z-10">
-        <Card className="w-[350px] shadow-2xl">
+        <Card className="w-[400px] shadow-2xl">
           <CardHeader>
             <CardTitle className="text-blue-300 text-xl text-center">
               Welcome Back to Brainly AI
@@ -59,29 +79,58 @@ export function Signin() {
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="Enter your username"
-                ref={usernameRef}
-              />
+          <CardContent className="space-y-6">
+            {/* Firebase Auth Buttons */}
+            <div>
+              <Label className="text-sm text-gray-600 mb-3 block">Quick Sign In</Label>
+              <AuthButtons />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                ref={passwordRef}
-              />
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+              </div>
             </div>
 
-            <Button className="w-full" onClick={signin}>
-              Sign In
-            </Button>
+            {/* Traditional Username/Password Form */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  placeholder="Enter your username"
+                  ref={usernameRef}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  ref={passwordRef}
+                />
+              </div>
+
+              <Button className="w-full" onClick={signin}>
+                Sign In
+              </Button>
+            </div>
+
+            <div className="text-center">
+              <span className="text-gray-600">Don't have an account? </span>
+              <button 
+                onClick={() => navigate("/signup")}
+                className="text-blue-600 hover:underline"
+              >
+                Sign up
+              </button>
+            </div>
           </CardContent>
         </Card>
       </div>
